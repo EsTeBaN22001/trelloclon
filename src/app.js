@@ -9,4 +9,4 @@ app.use(express.json())
 app.use(morgan('dev'))
 
 app.use(indexRoutes)
-app.use('/auth', authRoutes)
+app.use('/api/auth', authRoutes)

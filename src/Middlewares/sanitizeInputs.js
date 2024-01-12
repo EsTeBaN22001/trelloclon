@@ -13,3 +13,5 @@ export const sanitizeRegisterUser = [
   sanitizeField('email').isEmail().normalizeEmail(),
   sanitizeField('password')
 ]
+
+export const sanitizeLoginUser = [sanitizeField('email').isEmail().normalizeEmail(), sanitizeField('password')]

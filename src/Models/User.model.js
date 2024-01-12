@@ -29,7 +29,7 @@ export const userExistsByEmail = async email => {
     const [result] = await pool.query('SELECT * FROM users WHERE email = ?', [email])
 
     if (result.length > 0) {
-      return true
+      return result[0]
     }
     return false
   } catch (error) {
