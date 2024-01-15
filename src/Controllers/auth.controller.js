@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { registerUser, userExistsByEmail } from '../Models/User.model.js'
-import { generateToken } from '../Middlewares/jwt.js'
+import { generateToken, generateRecoveryToken } from '../Middlewares/jwt.js'
 
 export const registerController = async (req, res) => {
   const { name, email, password } = req.body
@@ -76,4 +76,26 @@ export const isAvailable = async (req, res) => {
   }
 
   res.send({ isAvailable })
+}
+
+export const recovery = async (req, res) => {
+  const { email } = req.body
+
+  const userExists = userExistsByEmail(email)
+
+  if (!userExists) {
+    res.status(400)
+    return res.end(
+      JSON.stringify({
+        success: false,
+        message: 'This email is not associated with an account'
+      })
+    )
+  }
+
+  const token = generateRecoveryToken(email)
+
+  res.send({
+    recoveryToken: token
+  })
 }

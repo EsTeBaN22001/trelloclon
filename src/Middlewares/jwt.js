@@ -10,6 +10,15 @@ export const generateToken = email => {
   return token
 }
 
+export const generateRecoveryToken = email => {
+  const payload = {
+    email
+  }
+
+  const token = jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '10m' })
+  return token
+}
+
 export const verifyToken = (req, res, next) => {
   const token = req.header.authorization
 
