@@ -63,3 +63,17 @@ export const loginController = async (req, res) => {
 
   res.send({ token })
 }
+
+export const isAvailable = async (req, res) => {
+  const { email } = req.body
+
+  const userExists = await userExistsByEmail(email)
+
+  let isAvailable = false
+
+  if (!userExists) {
+    isAvailable = true
+  }
+
+  res.send({ isAvailable })
+}
