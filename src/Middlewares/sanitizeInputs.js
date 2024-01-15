@@ -17,3 +17,5 @@ export const sanitizeRegisterUser = [
 export const sanitizeLoginUser = [sanitizeField('email').isEmail().normalizeEmail(), sanitizeField('password')]
 
 export const sanitizeEmailInput = [sanitizeField('email').isEmail().normalizeEmail()]
+
+export const sanitizeChangePassword = [sanitizeField('newPassword'), sanitizeField('token')]

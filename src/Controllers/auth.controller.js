@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
-import { registerUser, userExistsByEmail } from '../Models/User.model.js'
+import jwt from 'jsonwebtoken'
+import { getUserByEmail, registerUser, updatePassword, userExistsByEmail } from '../Models/User.model.js'
 import { generateToken, generateRecoveryToken } from '../Middlewares/jwt.js'
+import { JWT_SECRET_KEY } from '../config.js'
 
 export const registerController = async (req, res) => {
   const { name, email, password } = req.body
@@ -9,12 +11,10 @@ export const registerController = async (req, res) => {
 
   if (userExists) {
     res.status(400)
-    return res.end(
-      JSON.stringify({
-        success: false,
-        message: 'This email has already in use'
-      })
-    )
+    return res.send({
+      success: false,
+      message: 'This email has already in use'
+    })
   }
 
   const user = {
@@ -37,12 +37,10 @@ export const loginController = async (req, res) => {
 
   if (!userExists || JSON.stringify(userExists) === '{}') {
     res.status(400)
-    return res.end(
-      JSON.stringify({
-        success: false,
-        message: 'This email is not associated with an account'
-      })
-    )
+    return res.send({
+      success: false,
+      message: 'This email is not associated with an account'
+    })
   }
 
   // verificar contraseña
@@ -85,12 +83,10 @@ export const recovery = async (req, res) => {
 
   if (!userExists) {
     res.status(400)
-    return res.end(
-      JSON.stringify({
-        success: false,
-        message: 'This email is not associated with an account'
-      })
-    )
+    return res.send({
+      success: false,
+      message: 'This email is not associated with an account'
+    })
   }
 
   const token = generateRecoveryToken(email)
@@ -98,4 +94,48 @@ export const recovery = async (req, res) => {
   res.send({
     recoveryToken: token
   })
+}
+
+export const changePassword = async (req, res) => {
+  const { token, newPassword } = req.body
+
+  // validar el token
+  try {
+    const verifyToken = jwt.verify(token, JWT_SECRET_KEY)
+
+    if (verifyToken) {
+      const user = await getUserByEmail(verifyToken.email)
+
+      if (!user) {
+        return res.send({
+          success: false,
+          message: 'This email is not associated with an account'
+        })
+      }
+
+      const passwordHash = await bcrypt.hash(newPassword, 5)
+
+      const update = await updatePassword(user.id, passwordHash)
+
+      if (!update) {
+        res.status(400)
+        return res.send({
+          success: false,
+          message: 'Password is not changed'
+        })
+      }
+
+      return res.send({
+        message: 'Password changed'
+      })
+    }
+
+    res.send({ verifyToken })
+  } catch (error) {
+    res.status(401)
+    return res.send({
+      success: false,
+      message: 'Unauthorized'
+    })
+  }
 }
