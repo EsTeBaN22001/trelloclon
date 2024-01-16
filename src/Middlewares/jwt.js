@@ -20,7 +20,9 @@ export const generateRecoveryToken = email => {
 }
 
 export const verifyToken = (req, res, next) => {
-  const token = req.header.authorization
+  const token = req.headers.authorization
+
+  console.log(req.headers)
 
   if (!token) {
     res.status(401)
@@ -28,11 +30,14 @@ export const verifyToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET_KEY)
+    const tokenParse = token.split(' ')[1]
+    const decoded = jwt.verify(tokenParse, JWT_SECRET_KEY)
     req.tokenInfo = decoded
     next()
   } catch (err) {
     res.status(401)
-    return res.end('Unauthorized')
+    return res.send({
+      message: 'Unathorized'
+    })
   }
 }

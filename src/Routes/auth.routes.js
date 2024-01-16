@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { verifyToken } from '../Middlewares/jwt.js'
 import {
   sanitizeEmailInput,
   sanitizeLoginUser,
@@ -13,7 +14,8 @@ const router = Router()
 router.post('/register', sanitizeRegisterUser, validateInputs, registerController)
 router.post('/login', sanitizeLoginUser, validateInputs, loginController)
 router.post('/is-available', sanitizeEmailInput, validateInputs, isAvailable)
-router.post('/recovery', sanitizeEmailInput, validateInputs, recovery)
-router.post('/change-password', sanitizeChangePassword, validateInputs, changePassword)
+
+router.post('/recovery', verifyToken, sanitizeEmailInput, validateInputs, recovery)
+router.post('/change-password', verifyToken, sanitizeChangePassword, validateInputs, changePassword)
 
 export default router
