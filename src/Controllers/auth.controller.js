@@ -139,3 +139,18 @@ export const changePassword = async (req, res) => {
     })
   }
 }
+
+export const profile = async (req, res) => {
+  const { email } = req.tokenInfo
+
+  const user = await getUserByEmail(email)
+
+  if (!user) {
+    res.status(400)
+    return res.send({
+      message: 'error getting profile'
+    })
+  }
+
+  res.send(user)
+}
