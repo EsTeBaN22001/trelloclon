@@ -1,13 +1,15 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { getUserByEmail, registerUser, updatePassword, userExistsByEmail } from '../Models/User.model.js'
+import { UserModel } from '../Models/User.model.js'
 import { generateToken, generateRecoveryToken } from '../Middlewares/jwt.js'
 import { JWT_SECRET_KEY } from '../config.js'
 
 export const registerController = async (req, res) => {
   const { name, email, password } = req.body
 
-  const userExists = await userExistsByEmail(email)
+  const userExists = await UserModel.getUserByEmail(email)
+
+  console.log(userExists)
 
   if (userExists) {
     res.status(400)
@@ -24,7 +26,7 @@ export const registerController = async (req, res) => {
     avatar: 'https://pic.onlinewebfonts.com/thumbnails/icons_110805.svg'
   }
 
-  const newUser = await registerUser(user)
+  const newUser = await UserModel.registerUser(user)
 
   res.status(200)
   res.send(newUser)
@@ -33,7 +35,7 @@ export const registerController = async (req, res) => {
 export const loginController = async (req, res) => {
   const { email, password } = req.body
 
-  const userExists = await userExistsByEmail(email)
+  const userExists = await UserModel.getUserByEmail(email)
 
   if (!userExists || JSON.stringify(userExists) === '{}') {
     res.status(400)
@@ -65,7 +67,7 @@ export const loginController = async (req, res) => {
 export const isAvailable = async (req, res) => {
   const { email } = req.body
 
-  const userExists = await userExistsByEmail(email)
+  const userExists = await UserModel.getUserByEmail(email)
 
   let isAvailable = false
 
@@ -79,7 +81,7 @@ export const isAvailable = async (req, res) => {
 export const recovery = async (req, res) => {
   const { email } = req.body
 
-  const userExists = userExistsByEmail(email)
+  const userExists = UserModel.getUserByEmail(email)
 
   if (!userExists) {
     res.status(400)
@@ -104,7 +106,7 @@ export const changePassword = async (req, res) => {
     const verifyToken = jwt.verify(token, JWT_SECRET_KEY)
 
     if (verifyToken) {
-      const user = await getUserByEmail(verifyToken.email)
+      const user = await UserModel.getUserByEmail(verifyToken.email)
 
       if (!user) {
         return res.send({
@@ -115,7 +117,7 @@ export const changePassword = async (req, res) => {
 
       const passwordHash = await bcrypt.hash(newPassword, 5)
 
-      const update = await updatePassword(user.id, passwordHash)
+      const update = await UserModel.updatePassword(user.id, passwordHash)
 
       if (!update) {
         res.status(400)
@@ -143,7 +145,7 @@ export const changePassword = async (req, res) => {
 export const profile = async (req, res) => {
   const { email } = req.tokenInfo
 
-  const user = await getUserByEmail(email)
+  const user = await UserModel.getUserByEmail(email)
 
   if (!user) {
     res.status(400)
