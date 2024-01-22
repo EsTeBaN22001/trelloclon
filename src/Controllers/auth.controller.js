@@ -9,8 +9,6 @@ export const registerController = async (req, res) => {
 
   const userExists = await UserModel.getUserByEmail(email)
 
-  console.log(userExists)
-
   if (userExists) {
     res.status(400)
     return res.send({

@@ -3,6 +3,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import indexRoutes from './Routes/index.routes.js'
 import authRoutes from './Routes/auth.routes.js'
+import boardRoutes from './Routes/board.routes.js'
 
 export const app = express()
 
@@ -10,5 +11,6 @@ app.use(express.json())
 app.use(morgan('dev'))
 app.use(cors())
 
-app.use(indexRoutes)
+app.use('/api', indexRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/boards', boardRoutes)

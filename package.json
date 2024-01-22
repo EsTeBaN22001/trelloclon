@@ -22,11 +22,15 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
+    "eslint-config-standard": "^17.1.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.2",
     "standard": "^17.1.0"
   },
   "eslintConfig": {
-    "extends": "standard"
+    "extends": "standard",
+    "rules": {
+      "prefer-const": "off"
+    }
   }
 }

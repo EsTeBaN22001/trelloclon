@@ -22,8 +22,6 @@ export const generateRecoveryToken = email => {
 export const verifyToken = (req, res, next) => {
   const token = req.headers.authorization
 
-  console.log(req.headers)
-
   if (!token) {
     res.status(401)
     return res.end('Unauthorized')
