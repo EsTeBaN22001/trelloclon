@@ -36,7 +36,7 @@ export const createBoard = async (req, res) => {
   })
 }
 
-export const getUserBoards = async (req, res) => {
+export const getBoards = async (req, res) => {
   const { email } = req.tokenInfo
 
   const user = await UserModel.getUserByEmail(email)
@@ -49,4 +49,20 @@ export const getUserBoards = async (req, res) => {
   }))
 
   res.send(boards)
+}
+
+export const getBoard = async (req, res) => {
+  const { id } = req.params
+
+  const board = await BoardModel.getBoard(id)
+
+  if (!board) {
+    res.status(400)
+    return res.send({
+      success: false,
+      message: 'Error getting board'
+    })
+  }
+
+  res.send(board)
 }
