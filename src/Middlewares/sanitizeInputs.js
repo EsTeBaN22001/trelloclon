@@ -17,3 +17,5 @@ export const sanitizeEmailInput = [sanitizeField('email').isEmail()]
 export const sanitizeChangePassword = [sanitizeField('newPassword'), sanitizeField('token')]
 
 export const sanitizeNewBoard = [sanitizeField('title'), sanitizeField('backgroundColor')]
+
+export const sanitizeNewList = [sanitizeField('title'), sanitizeField('position'), sanitizeField('boardId')]
