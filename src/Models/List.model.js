@@ -3,9 +3,9 @@ import { pool } from '../db.js'
 export class ListModel {
   static table = 'list'
 
-  static async getLists () {
+  static async getListsByBoardId (boardId) {
     try {
-      const [result] = await pool.query('SELECT * FROM list')
+      const [result] = await pool.query(`SELECT * FROM list WHERE boardId = ${boardId}`)
 
       if (result.length > 0) {
         return result

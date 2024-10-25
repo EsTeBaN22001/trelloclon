@@ -1,7 +1,13 @@
 import { ListModel } from '../Models/List.model.js'
 
-export const getLists = async (req, res) => {
-  const lists = await ListModel.getLists()
+export const getListsByBoardId = async (req, res) => {
+  const {boardId} = req.params
+  
+  const lists = await ListModel.getListsByBoardId(boardId)
+
+  if(!lists){
+    res.status(400).send({success: false, message: 'Error getting lists'})
+  }
 
   res.send(lists)
 }
