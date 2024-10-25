@@ -2,11 +2,11 @@ import { Router } from 'express'
 import { verifyToken } from '../Middlewares/jwt.js'
 import { sanitizeNewBoard } from '../Middlewares/sanitizeInputs.js'
 import { validateInputs } from '../Middlewares/validateInput.js'
-import { getBoards, getBoard, createBoard } from '../Controllers/board.controller.js'
+import { getMeBoards, getBoard, createBoard } from '../Controllers/board.controller.js'
 
 const router = Router()
 
-router.get('/', verifyToken, getBoards)
+router.get('/me', verifyToken, getMeBoards)
 router.get('/:id', verifyToken, getBoard)
 router.post('/', verifyToken, sanitizeNewBoard, validateInputs, createBoard)
 

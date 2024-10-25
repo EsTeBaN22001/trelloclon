@@ -36,12 +36,12 @@ export const createBoard = async (req, res) => {
   })
 }
 
-export const getBoards = async (req, res) => {
+export const getMeBoards = async (req, res) => {
   const { email } = req.tokenInfo
 
   const user = await UserModel.getUserByEmail(email)
 
-  const userBoardsId = await UserBoardsModel.getUserBoards(user.id)
+  const userBoardsId = await UserBoardsModel.getMeBoards(user.id)
 
   const boards = await Promise.all(userBoardsId.map(async userBoard => {
     const board = await BoardModel.getBoard(userBoard.id)

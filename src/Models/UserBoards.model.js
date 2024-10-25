@@ -3,7 +3,7 @@ import { pool } from '../db.js'
 export class UserBoardsModel {
   static table = 'userboards'
 
-  static async getUserBoards (userId) {
+  static async getMeBoards (userId) {
     try {
       const [result] = await pool.query(`SELECT * FROM ${this.table} WHERE userId = ?`, [userId])
 

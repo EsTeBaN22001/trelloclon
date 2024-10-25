@@ -19,3 +19,5 @@ export const sanitizeChangePassword = [sanitizeField('newPassword'), sanitizeFie
 export const sanitizeNewBoard = [sanitizeField('title'), sanitizeField('backgroundColor')]
 
 export const sanitizeNewList = [sanitizeField('title'), sanitizeField('position'), sanitizeField('boardId')]
+
+export const sanitizeNewCard = [sanitizeField('title'), sanitizeField('listId'), sanitizeField('position')]
