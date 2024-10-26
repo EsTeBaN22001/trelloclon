@@ -7,7 +7,7 @@ import { getMeBoards, getBoard, createBoard } from '../Controllers/board.control
 const router = Router()
 
 router.get('/me', verifyToken, getMeBoards)
-router.get('/:id', verifyToken, getBoard)
+router.get('/:boardId', verifyToken, getBoard)
 router.post('/', verifyToken, sanitizeNewBoard, validateInputs, createBoard)
 
 export default router
