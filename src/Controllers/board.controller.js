@@ -53,6 +53,8 @@ export const getMeBoards = async (req, res) => {
     const board = await BoardModel.getBoard(userBoard.boardId)
     return board || null
   }))
+  
+  return res.send(boards)
 
   res.send(boards)
 }
