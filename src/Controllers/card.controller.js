@@ -29,5 +29,10 @@ export const createCard = async (req, res) => {
     })
   }
 
-  res.send(newCard)
+  res.send({
+    id: newCard.insertId,
+    title,
+    listId,
+    position
+  })
 }
