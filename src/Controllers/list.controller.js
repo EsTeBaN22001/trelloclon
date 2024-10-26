@@ -25,6 +25,10 @@ export const createList = async (req, res) => {
     id: newList.insertId,
     title,
     position,
+<<<<<<< HEAD
     boardId
+=======
+    boardIdq
+>>>>>>> e4c692f2bcc7ad9995cb59fd6c5eb4b4ccfdbf3d
   })
 }
