@@ -3,9 +3,23 @@ import { pool } from '../db.js'
 export class CardModel {
   static table = 'card'
 
-  static async createCard (title, position, listId) {
+  static async getCardsByListId(listId){
     try {
-      const [result] = await pool.query(`INSERT INTO ${this.table} (title, position, listId) VALUES (?, ?, ?)`, [title, position, listId])
+      const result = await pool.query(`SELECT * FROM ${this.table} WHERE listId = ?`, [listId])
+      
+      if (result.length > 0) {
+        return result[0]
+      }
+
+      return false
+    } catch (error) {
+      return { success: false, error }
+    }
+  }
+  
+  static async createCard (title, listId, position) {
+    try {
+      const [result] = await pool.query(`INSERT INTO ${this.table} (title, listId, position) VALUES (?, ?, ?)`, [title, listId, position])
 
       if (!result || result.affectedRows <= 0) {
         return false

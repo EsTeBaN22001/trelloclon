@@ -1,6 +1,8 @@
 import { BoardModel } from '../Models/Board.model.js'
 import { UserModel } from '../Models/User.model.js'
 import { UserBoardsModel } from '../Models/UserBoards.model.js'
+import { ListModel } from '../Models/List.model.js'
+import { CardModel } from '../Models/Card.model.js'
 
 export const createBoard = async (req, res) => {
   const { email } = req.tokenInfo
@@ -41,10 +43,14 @@ export const getMeBoards = async (req, res) => {
 
   const user = await UserModel.getUserByEmail(email)
 
-  const userBoardsId = await UserBoardsModel.getMeBoards(user.id)
+  if(!user){
+    return res.status(400).send({success: false, message: 'Error getting boards'})
+  }
 
-  const boards = await Promise.all(userBoardsId.map(async userBoard => {
-    const board = await BoardModel.getBoard(userBoard.id)
+  const userBoards = await UserBoardsModel.getMeBoards(user.id)
+  
+  const boards = await Promise.all(userBoards.map(async userBoard => {
+    const board = await BoardModel.getBoard(userBoard.boardId)
     return board || null
   }))
 
@@ -52,9 +58,32 @@ export const getMeBoards = async (req, res) => {
 }
 
 export const getBoard = async (req, res) => {
-  const { id } = req.params
+  const { boardId } = req.params
 
-  const board = await BoardModel.getBoard(id)
+  let board = await BoardModel.getBoard(boardId)
+
+  if(!board){
+    return res.status(400).send({success: false, message: 'Error getting board'})
+  }
+
+  const userLists = await ListModel.getListsByBoardId(boardId)
+  
+  const lists = await Promise.all(userLists.map(async (userList) => {
+    const cards = await CardModel.getCardsByListId(userList.id)
+    return {
+      ...userList,
+      cards
+    }
+    
+  }))
+  
+  if(lists.length > 0){
+    board = {
+      ...board,
+      lists
+    }
+  }
+  
 
   if (!board) {
     res.status(400)
