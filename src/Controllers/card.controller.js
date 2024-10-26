@@ -29,6 +29,15 @@ export const createCard = async (req, res) => {
     })
   }
 
+  console.log('newCard: ', newCard)
+  
+  console.log('final object',{
+    id: newCard.insertId,
+    title,
+    listId,
+    position
+  })
+  
   res.send({
     id: newCard.insertId,
     title,
