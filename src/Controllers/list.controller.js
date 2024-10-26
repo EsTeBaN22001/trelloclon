@@ -20,6 +20,11 @@ export const createList = async (req, res) => {
   if (!newList) {
     return res.status(400).send({ success: false, message: 'Error creating list' })
   }
-
-  res.send(newList)
+  
+  res.send({
+    id: newList.insertId,
+    title,
+    position,
+    boardId
+  })
 }
