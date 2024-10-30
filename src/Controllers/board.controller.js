@@ -43,18 +43,16 @@ export const getMeBoards = async (req, res) => {
 
   const user = await UserModel.getUserByEmail(email)
 
-  if(!user){
-    return res.status(400).send({success: false, message: 'Error getting boards'})
+  if (!user) {
+    return res.status(400).send({ success: false, message: 'Error getting boards' })
   }
 
   const userBoards = await UserBoardsModel.getMeBoards(user.id)
-  
+
   const boards = await Promise.all(userBoards.map(async userBoard => {
     const board = await BoardModel.getBoard(userBoard.boardId)
     return board || null
   }))
-  
-  return res.send(boards)
 
   res.send(boards)
 }
@@ -64,28 +62,26 @@ export const getBoard = async (req, res) => {
 
   let board = await BoardModel.getBoard(boardId)
 
-  if(!board){
-    return res.status(400).send({success: false, message: 'Error getting board'})
+  if (!board) {
+    return res.status(400).send({ success: false, message: 'Error getting board' })
   }
 
   const userLists = await ListModel.getListsByBoardId(boardId)
-  
+
   const lists = await Promise.all(userLists.map(async (userList) => {
     const cards = await CardModel.getCardsByListId(userList.id)
     return {
       ...userList,
       cards
     }
-    
   }))
-  
-  if(lists.length > 0){
+
+  if (lists.length > 0) {
     board = {
       ...board,
       lists
     }
   }
-  
 
   if (!board) {
     res.status(400)
@@ -96,4 +92,20 @@ export const getBoard = async (req, res) => {
   }
 
   res.send(board)
+}
+
+export const deleteBoard = async (req, res) => {
+  const { boardId } = req.params
+
+  if (!boardId) {
+    return res.status(400).send({ success: false, message: 'Error deleting board' })
+  }
+
+  const deleteResult = await BoardModel.deleteBoard(boardId)
+
+  if (!deleteResult) {
+    return res.status(400).send({ success: false, message: 'Error deleting board' })
+  }
+
+  res.send({ success: true, message: 'Board deleted succesfully' })
 }

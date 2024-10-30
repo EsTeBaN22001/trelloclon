@@ -29,4 +29,18 @@ export class BoardModel {
       return { success: false, error }
     }
   }
+
+  static async deleteBoard (boardId) {
+    try {
+      const [result] = await pool.query(`DELETE FROM ${this.table} WHERE id = ${boardId}`)
+
+      if (result.affectedRows === 0) {
+        return false
+      }
+
+      return true
+    } catch (error) {
+      return { success: false, error }
+    }
+  }
 }
