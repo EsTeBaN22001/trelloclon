@@ -30,4 +30,18 @@ export class ListModel {
       return { success: false, error }
     }
   }
+
+  static async deleteList (listId) {
+    try {
+      const [result] = await pool.query(`DELETE FROM ${this.table} WHERE id = ${listId}`)
+
+      if (result.affectedRows === 0) {
+        return false
+      }
+
+      return true
+    } catch (error) {
+      return { success: false, error }
+    }
+  }
 }
