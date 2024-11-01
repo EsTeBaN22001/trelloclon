@@ -30,4 +30,18 @@ export class CardModel {
       return { success: false, error }
     }
   }
+
+  static async deleteCard (cardId) {
+    try {
+      const [result] = await pool.query(`DELETE FROM ${this.table} WHERE id = ${cardId}`)
+
+      if (result.affectedRows === 0) {
+        return false
+      }
+
+      return true
+    } catch (error) {
+      return { success: false, error }
+    }
+  }
 }
