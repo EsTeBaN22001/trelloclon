@@ -31,6 +31,20 @@ export class ListModel {
     }
   }
 
+  static async updateListPosition (listId, position) {
+    try {
+      const [result] = await pool.query(`UPDATE ${this.table} SET position = ? WHERE id = ?`, [position, listId])
+
+      if (!result || result.affectedRows <= 0) {
+        return false
+      }
+
+      return true
+    } catch (error) {
+      return { success: false, error }
+    }
+  }
+
   static async deleteList (listId) {
     try {
       const [result] = await pool.query(`DELETE FROM ${this.table} WHERE id = ${listId}`)

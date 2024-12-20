@@ -29,6 +29,22 @@ export const createList = async (req, res) => {
   })
 }
 
+export const updateListPosition = async (req, res) => {
+  const { id, position } = req.body
+
+  if (!id || position === undefined) {
+    return res.status(400).send({ success: false, message: 'Error updating list position' })
+  }
+
+  const updateList = await ListModel.updateListPosition(id, position)
+
+  if (!updateList) {
+    return res.status(400).send({ success: false, message: 'Error updating list position' })
+  }
+
+  return res.status(200).send({ success: true, message: 'List position updated succesfully' })
+}
+
 export const deleteList = async (req, res) => {
   const { listId } = req.params
 
