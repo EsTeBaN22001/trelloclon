@@ -5,7 +5,7 @@ export class ListModel {
 
   static async getListsByBoardId (boardId) {
     try {
-      const [result] = await pool.query(`SELECT * FROM list WHERE boardId = ${boardId}`)
+      const [result] = await pool.query('SELECT * FROM list WHERE boardId = ? ORDER BY position ASC', [boardId])
 
       if (result.length > 0) {
         return result
