@@ -5,7 +5,7 @@ export class CardModel {
 
   static async getCardsByListId (listId) {
     try {
-      const result = await pool.query(`SELECT * FROM ${this.table} WHERE listId = ?`, [listId])
+      const result = await pool.query(`SELECT * FROM ${this.table} WHERE listId = ? ORDER BY position ASC`, [listId])
 
       if (result.length > 0) {
         return result[0]
@@ -26,6 +26,20 @@ export class CardModel {
       }
 
       return result
+    } catch (error) {
+      return { success: false, error }
+    }
+  }
+
+  static async updateCardPosition (id, position, listId) {
+    try {
+      const [result] = await pool.query(`UPDATE ${this.table} SET position = ?, listId = ? WHERE id = ?`, [position, listId, id])
+
+      if (!result || result.affectedRows <= 0) {
+        return false
+      }
+
+      return true
     } catch (error) {
       return { success: false, error }
     }

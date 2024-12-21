@@ -46,6 +46,22 @@ export const createCard = async (req, res) => {
   })
 }
 
+export const updateCardPosition = async (req, res) => {
+  const { id, position, listId } = req.body
+
+  if (!id || position === undefined || !listId) {
+    return res.status(400).send({ success: false, message: 'Error updating card position' })
+  }
+
+  const updateCard = await CardModel.updateCardPosition(id, position, listId)
+
+  if (!updateCard) {
+    return res.status(400).send({ success: false, message: 'Error updating card position' })
+  }
+
+  return res.status(200).send({ success: true, message: 'Card position updated succesfully' })
+}
+
 export const deleteCard = async (req, res) => {
   const { cardId } = req.params
 
