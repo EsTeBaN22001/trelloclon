@@ -1,11 +1,19 @@
 import { body } from 'express-validator'
 import sanitizeHtml from 'sanitize-html'
 
-const sanitizeField = field => {
-  return body(field)
-    .notEmpty()
+const sanitizeField = (field, optional = false) => {
+  let validator = body(field)
     .trim()
     .customSanitizer(value => sanitizeHtml(value))
+
+  if (optional) {
+    validator = validator.optional({ nullable: true, checkFalsy: true })
+    // validator = validator.optional({values: 'null' || 'falsy'})
+  } else {
+    validator = validator.notEmpty()
+  }
+
+  return validator
 }
 
 // AUTH
@@ -22,3 +30,4 @@ export const sanitizeNewList = [sanitizeField('title'), sanitizeField('position'
 
 // CARDS
 export const sanitizeNewCard = [sanitizeField('title'), sanitizeField('listId'), sanitizeField('position').toInt()]
+export const sanitizeUpdateCard = [sanitizeField('id', true), sanitizeField('title', true), sanitizeField('listId', true), sanitizeField('position', true), sanitizeField('description', true)]

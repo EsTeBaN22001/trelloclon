@@ -31,15 +31,31 @@ export class CardModel {
     }
   }
 
-  static async updateCardPosition (id, position, listId) {
+  static async updateCard (id, fields) {
     try {
-      const [result] = await pool.query(`UPDATE ${this.table} SET position = ?, listId = ? WHERE id = ?`, [position, listId, id])
-
-      if (!result || result.affectedRows <= 0) {
-        return false
+      // Validar que se proporcione al menos un campo para actualizar
+      if (Object.keys(fields).length === 0) {
+        throw new Error('No fields provided to update')
       }
 
-      return true
+      // Construir dinámicamente la consulta SQL
+      const setClause = Object.keys(fields)
+        .map(key => `${key} = ?`)
+        .join(', ') // Genera algo como "position = ?, listId = ?"
+
+      const values = Object.values(fields) // Los valores correspondientes
+      values.push(id) // Agregar el ID al final para la cláusula WHERE
+
+      const [result] = await pool.query(
+        `UPDATE ${this.table} SET ${setClause} WHERE id = ?`,
+        values
+      )
+
+      if (!result || result.affectedRows <= 0) {
+        return false // Indicar que no se actualizó ninguna fila
+      }
+
+      return true // Actualización exitosa
     } catch (error) {
       return { success: false, error }
     }
