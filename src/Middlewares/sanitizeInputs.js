@@ -27,7 +27,14 @@ export const sanitizeNewBoard = [sanitizeField('title'), sanitizeField('backgrou
 
 // LISTS
 export const sanitizeNewList = [sanitizeField('title'), sanitizeField('position').toInt(), sanitizeField('boardId')]
+export const sanitizePositionList = [sanitizeField('id'), sanitizeField('position').toInt()]
 
 // CARDS
 export const sanitizeNewCard = [sanitizeField('title'), sanitizeField('listId'), sanitizeField('position').toInt()]
-export const sanitizeUpdateCard = [sanitizeField('id', true), sanitizeField('title', true), sanitizeField('listId', true), sanitizeField('position', true), sanitizeField('description', true)]
+export const sanitizeUpdateCard = [
+  sanitizeField('id', true),
+  sanitizeField('title', true),
+  sanitizeField('listId', true),
+  sanitizeField('position', true),
+  sanitizeField('description', true)
+]

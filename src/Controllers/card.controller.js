@@ -29,15 +29,6 @@ export const createCard = async (req, res) => {
     })
   }
 
-  console.log('newCard: ', newCard)
-
-  console.log('final object', {
-    id: newCard.insertId,
-    title,
-    listId,
-    position
-  })
-
   res.send({
     id: newCard.insertId,
     title,
@@ -60,7 +51,7 @@ export const updateCard = async (req, res) => {
     return res.status(400).send({ success: false, message: 'Error updating card position' })
   }
 
-  return res.status(200).send({ success: true, message: 'Card position updated succesfully' })
+  return res.status(200).send({ success: true, message: 'Card updated succesfully' })
 }
 
 export const deleteCard = async (req, res) => {

@@ -32,5 +32,10 @@
     "rules": {
       "prefer-const": "off"
     }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt"
+    ]
   }
 }
