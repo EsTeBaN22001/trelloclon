@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { createList, deleteList, getListsByBoardId, updateListPosition } from '../Controllers/list.controller.js'
 import { verifyToken } from '../Middlewares/jwt.js'
 import { sanitizeNewList, sanitizePositionList } from '../Middlewares/sanitizeInputs.js'
 import { validateInputs } from '../Middlewares/validateInput.js'
+import { getListsByBoardId, createList, updateListPosition, deleteList } from '../Controllers/list.controller.js'
 
 const router = Router()
 

@@ -1,4 +1,4 @@
-import { CardModel } from '../Models/Card.model.js'
+import { Card } from '../../models/init-models.js'
 
 export const getCardsByListId = async (req, res) => {
   const { listId } = req.params
@@ -7,7 +7,7 @@ export const getCardsByListId = async (req, res) => {
     res.status(400).send({ success: false, message: 'Error getting cards' })
   }
 
-  const cards = await CardModel.getCardsByListId(listId)
+  const cards = await Card.findAll({ where: { listId } })
 
   if (!cards) {
     res.status(400).send({ success: false, message: 'Error getting cards' })
@@ -19,7 +19,7 @@ export const getCardsByListId = async (req, res) => {
 export const createCard = async (req, res) => {
   const { title, listId, position } = req.body
 
-  const newCard = await CardModel.createCard(title, listId, position)
+  const newCard = await Card.create({ title, position, listId })
 
   if (!newCard) {
     res.status(400)
@@ -30,7 +30,7 @@ export const createCard = async (req, res) => {
   }
 
   res.send({
-    id: newCard.insertId,
+    id: newCard.id,
     title,
     listId,
     position
@@ -45,7 +45,8 @@ export const updateCard = async (req, res) => {
     return res.status(400).send({ success: false, message: 'Error updating card position' })
   }
 
-  const updateCard = await CardModel.updateCard(cardId, cardProps)
+  // const updateCard = await CardModel.updateCard(cardId, cardProps)
+  const updateCard = await Card.update(cardProps, { where: { id: cardId } })
 
   if (!updateCard) {
     return res.status(400).send({ success: false, message: 'Error updating card position' })
@@ -61,7 +62,8 @@ export const deleteCard = async (req, res) => {
     return res.status(400).send({ success: false, message: 'Error deleting card' })
   }
 
-  const deleteResult = await CardModel.deleteCard(cardId)
+  // const deleteResult = await CardModel.deleteCard(cardId)
+  const deleteResult = await Card.destroy({ where: { id: cardId } })
 
   if (!deleteResult) {
     return res.status(400).send({ success: false, message: 'Error deleting card' })

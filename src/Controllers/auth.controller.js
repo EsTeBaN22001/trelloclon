@@ -1,13 +1,18 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { UserModel } from '../Models/User.model.js'
 import { generateToken, generateRecoveryToken } from '../Middlewares/jwt.js'
 import { JWT_SECRET_KEY } from '../config.js'
+
+import { User } from '../../models/init-models.js'
 
 export const registerController = async (req, res) => {
   const { name, email, password } = req.body
 
-  const userExists = await UserModel.getUserByEmail(email)
+  const userExists = await User.findOne({
+    where: {
+      email
+    }
+  })
 
   if (userExists) {
     res.status(400)
@@ -24,7 +29,15 @@ export const registerController = async (req, res) => {
     avatar: 'https://pic.onlinewebfonts.com/thumbnails/icons_110805.svg'
   }
 
-  const newUser = await UserModel.registerUser(user)
+  // const newUser = await UserModel.registerUser(user)
+  const newUser = await User.create(user)
+
+  if (!newUser) {
+    return res.status(400).send({
+      success: false,
+      message: 'User has nos been created'
+    })
+  }
 
   res.status(200)
   res.send(newUser)
@@ -33,7 +46,11 @@ export const registerController = async (req, res) => {
 export const loginController = async (req, res) => {
   const { email, password } = req.body
 
-  const userExists = await UserModel.getUserByEmail(email)
+  const userExists = await User.findOne({
+    where: {
+      email
+    }
+  })
 
   if (!userExists || JSON.stringify(userExists) === '{}') {
     res.status(400)
@@ -65,7 +82,12 @@ export const loginController = async (req, res) => {
 export const isAvailable = async (req, res) => {
   const { email } = req.body
 
-  const userExists = await UserModel.getUserByEmail(email)
+  // const userExists = await UserModel.getUserByEmail(email)
+  const userExists = await User.findOne({
+    where: {
+      email
+    }
+  })
 
   let isAvailable = false
 
@@ -79,7 +101,8 @@ export const isAvailable = async (req, res) => {
 export const recovery = async (req, res) => {
   const { email } = req.body
 
-  const userExists = UserModel.getUserByEmail(email)
+  // const userExists = UserModel.getUserByEmail(email)
+  const userExists = await User.findOne({ where: { email } })
 
   if (!userExists) {
     res.status(400)
@@ -104,7 +127,9 @@ export const changePassword = async (req, res) => {
     const verifyToken = jwt.verify(token, JWT_SECRET_KEY)
 
     if (verifyToken) {
-      const user = await UserModel.getUserByEmail(verifyToken.email)
+      const user = await User.findOne({ where: { email: verifyToken.email } })
+
+      console.log(user)
 
       if (!user) {
         return res.send({
@@ -115,7 +140,7 @@ export const changePassword = async (req, res) => {
 
       const passwordHash = await bcrypt.hash(newPassword, 5)
 
-      const update = await UserModel.updatePassword(user.id, passwordHash)
+      const update = await User.update({ password: passwordHash }, { where: { id: user.id } })
 
       if (!update) {
         res.status(400)
@@ -142,8 +167,7 @@ export const changePassword = async (req, res) => {
 
 export const profile = async (req, res) => {
   const { email } = req.tokenInfo
-
-  const user = await UserModel.getUserByEmail(email)
+  const user = await User.findOne({ where: { email } })
 
   if (!user) {
     res.status(400)

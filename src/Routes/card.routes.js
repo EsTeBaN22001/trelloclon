@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { sanitizeNewCard } from '../Middlewares/sanitizeInputs.js'
 import { validateInputs } from '../Middlewares/validateInput.js'
-import { createCard, deleteCard, getCardsByListId, updateCard } from '../Controllers/card.controller.js'
+import { getCardsByListId, createCard, updateCard, deleteCard } from '../Controllers/card.controller.js'
 import { verifyToken } from '../Middlewares/jwt.js'
 
 const router = Router()

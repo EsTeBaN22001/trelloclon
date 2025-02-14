@@ -1,9 +1,9 @@
-import { ListModel } from '../Models/List.model.js'
+import { List } from '../../models/init-models.js'
 
 export const getListsByBoardId = async (req, res) => {
   const { boardId } = req.params
 
-  const lists = await ListModel.getListsByBoardId(boardId)
+  const lists = await List.findAll({ where: { boardId: boardId }, order: [['position', 'ASC']] })
 
   if (!lists) {
     res.status(400).send({ success: false, message: 'Error getting lists' })
@@ -15,14 +15,14 @@ export const getListsByBoardId = async (req, res) => {
 export const createList = async (req, res) => {
   const { title, position, boardId } = req.body
 
-  const newList = await ListModel.createList(title, position, boardId)
+  const newList = await List.create({ title, position, boardId })
 
   if (!newList) {
     return res.status(400).send({ success: false, message: 'Error creating list' })
   }
 
   res.send({
-    id: newList.insertId,
+    id: newList.id,
     title,
     position,
     boardId
@@ -36,7 +36,7 @@ export const updateListPosition = async (req, res) => {
     return res.status(400).send({ success: false, message: 'Error updating list position' })
   }
 
-  const updateList = await ListModel.updateListPosition(id, position)
+  const updateList = await List.update({ position }, { where: { id } })
 
   if (!updateList) {
     return res.status(400).send({ success: false, message: 'Error updating list position' })
@@ -52,7 +52,7 @@ export const deleteList = async (req, res) => {
     return res.status(400).send({ success: false, message: 'Error deleting list' })
   }
 
-  const deleteResult = await ListModel.deleteList(listId)
+  const deleteResult = await List.destroy({ where: { id: listId } })
 
   if (!deleteResult) {
     return res.status(400).send({ success: false, message: 'Error deleting list' })
