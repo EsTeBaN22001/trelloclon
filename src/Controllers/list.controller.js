@@ -3,60 +3,64 @@ import { List } from '../../models/init-models.js'
 export const getListsByBoardId = async (req, res) => {
   const { boardId } = req.params
 
-  const lists = await List.findAll({ where: { boardId: boardId }, order: [['position', 'ASC']] })
+  try {
+    const lists = await List.findAll({ where: { boardId: boardId }, order: [['position', 'ASC']] })
 
-  if (!lists) {
-    res.status(400).send({ success: false, message: 'Error getting lists' })
+    if (!lists) throw new Error('Error getting lists')
+
+    res.json(lists)
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.mesagge })
   }
-
-  res.send(lists)
 }
 
 export const createList = async (req, res) => {
   const { title, position, boardId } = req.body
 
-  const newList = await List.create({ title, position, boardId })
+  try {
+    const newList = await List.create({ title, position, boardId })
 
-  if (!newList) {
-    return res.status(400).send({ success: false, message: 'Error creating list' })
+    if (!newList) throw new Error('Error creating list')
+
+    res.json({
+      id: newList.id,
+      title,
+      position,
+      boardId
+    })
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.mesagge })
   }
-
-  res.send({
-    id: newList.id,
-    title,
-    position,
-    boardId
-  })
 }
 
 export const updateListPosition = async (req, res) => {
   const { id, position } = req.body
 
-  if (!id || position === undefined) {
-    return res.status(400).send({ success: false, message: 'Error updating list position' })
+  try {
+    if (!id || position === undefined) throw new Error('Error get list')
+
+    const updateList = await List.update({ position }, { where: { id } })
+
+    if (!updateList) throw new Error('Error updating list position')
+
+    return res.json({ success: true, message: 'List position updated succesfully' })
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
   }
-
-  const updateList = await List.update({ position }, { where: { id } })
-
-  if (!updateList) {
-    return res.status(400).send({ success: false, message: 'Error updating list position' })
-  }
-
-  return res.status(200).send({ success: true, message: 'List position updated succesfully' })
 }
 
 export const deleteList = async (req, res) => {
   const { listId } = req.params
 
-  if (!listId) {
-    return res.status(400).send({ success: false, message: 'Error deleting list' })
+  try {
+    if (!listId) throw new Error('Error getting list')
+
+    const deleteResult = await List.destroy({ where: { id: listId } })
+
+    if (!deleteResult) throw new Error('Error deleting list')
+
+    res.json({ success: true, message: 'List deleted succesfully' })
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
   }
-
-  const deleteResult = await List.destroy({ where: { id: listId } })
-
-  if (!deleteResult) {
-    return res.status(400).send({ success: false, message: 'Error deleting list' })
-  }
-
-  res.send({ success: true, message: 'List deleted succesfully' })
 }

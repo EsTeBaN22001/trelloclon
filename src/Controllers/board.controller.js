@@ -3,113 +3,114 @@ import { Board, Card, List, User, UserBoards } from '../../models/init-models.js
 export const getMeBoards = async (req, res) => {
   const { email } = req.tokenInfo
 
-  const user = await User.findOne({ where: { email } })
+  try {
+    const user = await User.findOne({ where: { email } })
 
-  if (!user) {
-    return res.status(400).send({ success: false, message: 'Error getting boards' })
-  }
+    if (!user) throw new Error('Error getting user')
 
-  const userBoards = await UserBoards.findAll({
-    where: {
-      userId: user.id
-    }
-  })
-
-  const boards = await Promise.all(
-    userBoards.map(async userBoard => {
-      const board = await Board.findOne({
-        where: {
-          id: userBoard.boardId
-        }
-      })
-      return board || null
+    const userBoards = await UserBoards.findAll({
+      where: {
+        userId: user.id
+      }
     })
-  )
 
-  res.send(boards)
+    if (!userBoards) throw new Error('Error getting boards')
+
+    const boards = await Promise.all(
+      userBoards.map(async userBoard => {
+        const board = await Board.findOne({
+          where: {
+            id: userBoard.boardId
+          }
+        })
+        return board || null
+      })
+    )
+
+    res.json(boards)
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
+  }
 }
 
 export const getBoard = async (req, res) => {
   const { boardId } = req.params
 
-  let board = await Board.findByPk(boardId)
+  try {
+    let board = await Board.findByPk(boardId)
 
-  if (!board) {
-    return res.status(400).send({ success: false, message: 'Error getting board' })
-  }
+    if (!board) throw new Error('Error getting board')
 
-  const userLists = await List.findAll({ where: { boardId }, order: [['position', 'ASC']] })
+    const userLists = await List.findAll({ where: { boardId }, order: [['position', 'ASC']] })
 
-  const lists = await Promise.all(
-    userLists.map(async userList => {
-      const cards = await Card.findAll({ where: { listId: userList.id }, order: [['position', 'ASC']] })
-      return {
-        ...userList.get({ plain: true }),
-        cards
+    const lists = await Promise.all(
+      userLists.map(async userList => {
+        const cards = await Card.findAll({ where: { listId: userList.id }, order: [['position', 'ASC']] })
+        return {
+          ...userList.get({ plain: true }),
+          cards
+        }
+      })
+    )
+
+    if (lists.length > 0) {
+      board = {
+        ...board.get({ plain: true }),
+        lists
       }
-    })
-  )
-
-  if (lists.length > 0) {
-    board = {
-      ...board.get({ plain: true }),
-      lists
     }
-  }
 
-  if (!board) {
-    res.status(400)
-    return res.send({ success: false, message: 'Error getting board' })
-  }
+    if (!board) throw new Error('Error getting board')
 
-  res.send(board)
+    res.json(board)
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
+  }
 }
 
 export const createBoard = async (req, res) => {
   const { email } = req.tokenInfo
   const { title, backgroundColor } = req.body
 
-  const user = await User.findOne({ where: { email } })
+  try {
+    const user = await User.findOne({ where: { email } })
 
-  if (!user) {
-    res.status(400)
-    return res.send({ success: false, message: 'Error creating board' })
+    if (!user) {
+      res.status(400)
+      return res.send({ success: false, message: 'Error creating board' })
+    }
+
+    // crear nueva board
+    const newBoard = await Board.create({ title, backgroundColor })
+
+    if (!newBoard) throw new Error('Error creating board')
+
+    const newUserBoard = await UserBoards.create({ boardId: newBoard.id, userId: user.id })
+
+    if (!newUserBoard) throw new Error('Error creating board')
+
+    res.json({
+      id: newBoard.insertId,
+      title,
+      backgroundColor
+    })
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
   }
-
-  // crear nueva board
-  const newBoard = await Board.create({ title, backgroundColor })
-
-  if (!newBoard) {
-    res.status(400)
-    return res.send({ success: false, message: 'Error creating board' })
-  }
-
-  const newUserBoard = await UserBoards.create({ boardId: newBoard.id, userId: user.id })
-
-  if (!newUserBoard) {
-    res.status(400)
-    return res.send({ success: false, message: 'Error creating board' })
-  }
-
-  res.send({
-    id: newBoard.insertId,
-    title,
-    backgroundColor
-  })
 }
 
 export const deleteBoard = async (req, res) => {
   const { boardId } = req.params
 
-  if (!boardId) {
-    return res.status(400).send({ success: false, message: 'Error deleting board' })
+  try {
+    if (!boardId) throw new Error('Error deleting board')
+
+    const deleteResult = await Board.destroy({ where: { id: boardId } })
+
+    if (!deleteResult) throw new Error('Error deleting board')
+
+    res.json({ message: 'Board deleted succesfully' })
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message })
   }
-
-  const deleteResult = await Board.destroy({ where: { id: boardId } })
-
-  if (!deleteResult) {
-    return res.status(400).send({ success: false, message: 'Error deleting board' })
-  }
-
-  res.send({ success: true, message: 'Board deleted succesfully' })
 }
