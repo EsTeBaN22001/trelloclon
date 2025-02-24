@@ -26,7 +26,9 @@ export default function (sequelize) {
         references: {
           model: 'list',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       }
     },
     {

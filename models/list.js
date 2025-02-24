@@ -22,7 +22,9 @@ export default function (sequelize) {
         references: {
           model: 'board',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       }
     },
     {

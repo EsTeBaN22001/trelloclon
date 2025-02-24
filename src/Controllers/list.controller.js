@@ -33,17 +33,18 @@ export const createList = async (req, res) => {
   }
 }
 
-export const updateListPosition = async (req, res) => {
-  const { id, position } = req.body
+export const updateList = async (req, res) => {
+  const { listId } = req.params
+  const listProps = req.body
 
   try {
-    if (!id || position === undefined) throw new Error('Error get list')
+    if (!listId) throw new Error('Error getting list')
 
-    const updateList = await List.update({ position }, { where: { id } })
+    const updateList = await List.update(listProps, { where: { id: listId } })
 
-    if (!updateList) throw new Error('Error updating list position')
+    if (!updateList) throw new Error('Error updating list')
 
-    return res.json({ success: true, message: 'List position updated succesfully' })
+    return res.json({ success: true, message: 'List updated succesfully' })
   } catch (err) {
     res.status(500).json({ success: false, message: err.message })
   }
