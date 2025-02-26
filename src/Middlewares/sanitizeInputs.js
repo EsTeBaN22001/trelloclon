@@ -8,7 +8,6 @@ const sanitizeField = (field, optional = false) => {
 
   if (optional) {
     validator = validator.optional({ nullable: true, checkFalsy: true })
-    // validator = validator.optional({values: 'null' || 'falsy'})
   } else {
     validator = validator.notEmpty()
   }
@@ -24,10 +23,15 @@ export const sanitizeChangePassword = [sanitizeField('newPassword'), sanitizeFie
 
 // BOARDS
 export const sanitizeNewBoard = [sanitizeField('title'), sanitizeField('backgroundColor')]
+export const sanitizeUpdateBoard = [
+  sanitizeField('id', true),
+  sanitizeField('title', true),
+  sanitizeField('backgroundColor', true)
+]
 
 // LISTS
 export const sanitizeNewList = [sanitizeField('title'), sanitizeField('position').toInt(), sanitizeField('boardId')]
-export const sanitizePositionList = [sanitizeField('id'), sanitizeField('position').toInt()]
+export const sanitizeUpdateList = [sanitizeField('id', true), sanitizeField('position', true).toInt()]
 
 // CARDS
 export const sanitizeNewCard = [sanitizeField('title'), sanitizeField('listId'), sanitizeField('position').toInt()]

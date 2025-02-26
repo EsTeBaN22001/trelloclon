@@ -99,6 +99,26 @@ export const createBoard = async (req, res) => {
   }
 }
 
+export const updateBoard = async (req, res) => {
+  const { boardId } = req.params
+  const boardProps = req.body
+
+  try {
+    if (!boardId) throw new Error('Error getting board')
+
+    const updateBoard = await Board.update(boardProps, { where: { id: boardId } })
+
+    if (!updateBoard[0]) throw new Error('Error updating board')
+
+    return res.json({ sucess: true, message: 'Board updated successfully' })
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: err.message
+    })
+  }
+}
+
 export const deleteBoard = async (req, res) => {
   const { boardId } = req.params
 
