@@ -143,3 +143,36 @@ export const profile = async (req, res) => {
     res.status(500).json({ success: false, message: err.message })
   }
 }
+
+export const changeUserinfo = async (req, res) => {
+  const { email } = req.body
+  const userProps = req.body
+
+  let newToken = null
+
+  if (userProps.newEmail) {
+    // Verificar si el nuevo email está disponible
+    try {
+      const userExists = await User.findOne({ where: { email: userProps.newEmail } })
+
+      if (userExists) throw new Error('This new Email is not available')
+
+      // Renovar y actualizar el jwt
+      newToken = await generateToken(userProps.newEmail)
+
+      if (!newToken) throw new Error('Error generating new token')
+    } catch (err) {
+      return res.status(500).json({ success: false, message: err.message })
+    }
+  }
+
+  try {
+    const saveUserInfo = await User.update({ name: userProps?.newName, email: userProps.newEmail }, { where: { email } })
+
+    if (!saveUserInfo) throw new Error('Error saving user info')
+
+    res.json({ success: true, message: 'The user info updated successfully', newToken })
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message })
+  }
+}

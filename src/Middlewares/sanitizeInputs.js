@@ -20,6 +20,11 @@ export const sanitizeRegisterUser = [sanitizeField('name'), sanitizeField('email
 export const sanitizeLoginUser = [sanitizeField('email').isEmail(), sanitizeField('password')]
 export const sanitizeEmailInput = [sanitizeField('email').isEmail()]
 export const sanitizeChangePassword = [sanitizeField('newPassword'), sanitizeField('token')]
+export const sanitizeChangeUserinfo = [
+  sanitizeField('email').isEmail(),
+  sanitizeField('newName', true),
+  sanitizeField('newEmail', true)
+]
 
 // BOARDS
 export const sanitizeNewBoard = [sanitizeField('title'), sanitizeField('backgroundColor')]

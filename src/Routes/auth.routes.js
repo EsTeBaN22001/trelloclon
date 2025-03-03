@@ -4,11 +4,13 @@ import {
   sanitizeEmailInput,
   sanitizeLoginUser,
   sanitizeRegisterUser,
-  sanitizeChangePassword
+  sanitizeChangePassword,
+  sanitizeChangeUserinfo
 } from '../Middlewares/sanitizeInputs.js'
 import { validateInputs } from '../Middlewares/validateInput.js'
 import {
   changePassword,
+  changeUserinfo,
   isAvailable,
   loginController,
   profile,
@@ -25,5 +27,6 @@ router.post('/is-available', sanitizeEmailInput, validateInputs, isAvailable)
 router.post('/recovery', verifyToken, sanitizeEmailInput, validateInputs, recovery)
 router.post('/change-password', verifyToken, sanitizeChangePassword, validateInputs, changePassword)
 router.get('/profile', verifyToken, profile)
+router.post('/change-userinfo', verifyToken, sanitizeChangeUserinfo, validateInputs, changeUserinfo)
 
 export default router
