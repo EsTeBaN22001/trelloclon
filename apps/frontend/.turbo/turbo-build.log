@@ -11,25 +11,25 @@
 ✔ Index html generation complete.
 
 Initial Chunk Files           | Names                        |  Raw Size | Estimated Transfer Size
+
+Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 24.83 kB with a total of 524.83 kB.
 main.349e17229608aa51.js      | main                         | 359.54 kB |                94.51 kB
+
+
 styles.b4b4c6e2d56c5ff7.css   | styles                       | 129.25 kB |                13.65 kB
 polyfills.57cee751c1578847.js | polyfills                    |  33.11 kB |                10.66 kB
 runtime.841931ef43f8c87f.js   | runtime                      |   2.93 kB |                 1.41 kB
 
 | Initial Total                | 524.83 kB |               120.24 kB
 
-
-Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 24.83 kB with a total of 524.83 kB.
 Lazy Chunk Files              | Names                        |  Raw Size | Estimated Transfer Size
 27.0051c4d44231b3a4.js        | boards-boards-module         |  91.94 kB |                22.43 kB
 794.a162cb18d2758aac.js       | boards-boards-module         |  82.34 kB |                19.09 kB
 166.088a8453522c40ea.js       | modules-layout-layout-module |  82.04 kB |                19.31 kB
 383.7337cc9aeedbecbf.js       | modules-auth-auth-module     |  79.71 kB |                20.65 kB
 141.d24813854ba052f0.js       | profile-profile-module       |  76.74 kB |                13.85 kB
-
 781.6b69c703fc612c42.js       | users-users-module           |  28.09 kB |                 6.78 kB
 96.e0f418f74cca6705.js        | modules-auth-auth-module     |  24.21 kB |                 3.77 kB
 common.b2a072a056a13be0.js    | common                       |   1.89 kB |               793 bytes
 
-Build at: 2025-03-05T23:08:07.359Z - Hash: 3df068bdf54df7a1 - Time: 14755ms
-
+Build at: 2025-03-05T23:26:14.264Z - Hash: 3df068bdf54df7a1 - Time: 8958ms
