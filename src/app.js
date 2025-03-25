@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
+
 import authRoutes from './Routes/auth.routes.js'
 import boardRoutes from './Routes/board.routes.js'
 import listRoutes from './Routes/list.routes.js'
