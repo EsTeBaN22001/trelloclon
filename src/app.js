@@ -9,9 +9,20 @@ import cardRoutes from './Routes/card.routes.js'
 
 export const app = express()
 
+const corsOptions = {
+  origin: [
+    'capacitor://localhost',
+    'http://localhost',
+    'https://localhost',
+    'http://localhost:4200',
+    'https://trelloclon-app.netlify.app'
+  ],
+  methods: ['OPTIONS', 'GET', 'POST', 'PUT', 'DELETE']
+}
+
 app.use(express.json())
 app.use(morgan('dev'))
-app.use(cors())
+app.use(cors(corsOptions))
 
 app.use('/api/auth', authRoutes)
 app.use('/api/boards', boardRoutes)
