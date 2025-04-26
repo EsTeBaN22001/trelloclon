@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root",
+    "database": "trelloclon",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "u4d0lqqybupx9pu2",
+    "password": "8Pv0vHuyGpZeyIjRKEjD",
+    "database": "bwhssbgi7xrwhpn0lefj",
+    "host": "bwhssbgi7xrwhpn0lefj-mysql.services.clever-cloud.com",
+    "dialect": "mysql"
+  }
+}

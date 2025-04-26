@@ -1,0 +1,4 @@
+node_modules
+.turbo
+.turbo/turbo-build.log
+.env
