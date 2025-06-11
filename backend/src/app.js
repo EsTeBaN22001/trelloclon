@@ -17,7 +17,7 @@ const corsOptions = {
     'http://localhost:4200',
     'https://trelloclon-app.netlify.app'
   ],
-  methods: ['OPTIONS', 'GET', 'POST', 'PUT', 'DELETE']
+  methods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 }
 
 app.use(express.json())
